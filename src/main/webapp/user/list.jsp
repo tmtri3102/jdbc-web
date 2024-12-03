@@ -8,6 +8,11 @@
 <body>
 <center>
     <h1>User Management</h1>
+    <form action="/users" method="post" style="margin: 5px 0">
+        <input type="hidden" name="action" value="search">
+        <input type="text" name="country" placeholder="Country" value="${requestScope.country}">
+        <input type="submit" value="Search">
+    </form>
     <h2>
         <a href="/users?action=create">Add New User</a>
     </h2>
@@ -35,6 +40,10 @@
             </tr>
         </c:forEach>
     </table>
+    <form action="/users" method="post" style="margin-top: 10px">
+        <input type="hidden" name="action" value="sort">
+        <input type="submit" value="Sort By Name" style="width: 120px">
+    </form>
 </div>
 </body>
 </html>

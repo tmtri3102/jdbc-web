@@ -36,10 +36,29 @@ public class UserServlet extends HttpServlet {
                 case "edit":
                     updateUser(request, response);
                     break;
+                case "sort":
+                    sortUserByName(request, response);
+                    break;
+                case "search":
+                    searchByCountry(request, response);
+                default:
+                    listUser(request, response);
+                    break;
             }
         } catch (SQLException ex) {
             throw new ServletException(ex);
         }
+    }
+
+    private void searchByCountry(HttpServletRequest request, HttpServletResponse response) throws SQLException, ServletException, IOException {
+        String country = request.getParameter("country");
+        List<User> list_users = userDAO.selectByCountry(country);
+        request.setAttribute("list_users", list_users);
+        List<User> listUser = userDAO.selectAllUsers();
+        request.setAttribute("listUser", listUser);
+        request.setAttribute("country", country);
+        RequestDispatcher dispatcher = request.getRequestDispatcher("user/list.jsp");
+        dispatcher.forward(request, response);
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -123,6 +142,14 @@ public class UserServlet extends HttpServlet {
         userDAO.deleteUser(id);
 
         List<User> listUser = userDAO.selectAllUsers();
+        request.setAttribute("listUser", listUser);
+        RequestDispatcher dispatcher = request.getRequestDispatcher("user/list.jsp");
+        dispatcher.forward(request, response);
+    }
+
+    private void sortUserByName(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, ServletException, IOException {
+        List<User> listUser = userDAO.selectUsersByName();
         request.setAttribute("listUser", listUser);
         RequestDispatcher dispatcher = request.getRequestDispatcher("user/list.jsp");
         dispatcher.forward(request, response);

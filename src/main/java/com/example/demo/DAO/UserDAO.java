@@ -16,6 +16,8 @@ public class UserDAO implements IUserDAO {
     private static final String SELECT_ALL_USERS = "select * from users"; // line 74
     private static final String DELETE_USERS_SQL = "delete from users where id = ?;"; //
     private static final String UPDATE_USERS_SQL = "update users set name = ?,email= ?, country =? where id = ?;";
+    private static final String SELECT_USERS_BY_NAME = "select * from users order by name";
+    private static final String SELECT_USERS_BY_COUNTRY = "select * from users where country = ?;";
 
     public UserDAO() {
     }
@@ -33,6 +35,46 @@ public class UserDAO implements IUserDAO {
         return connection;
     }
 
+    public List<User> selectByCountry(String in_country) {
+        List<User> result_users = new ArrayList<>();
+        try (Connection connection = getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_USERS_BY_COUNTRY))
+        {
+            System.out.println(preparedStatement);
+            preparedStatement.setString(1, in_country);
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String name = rs.getString("name");
+                String email = rs.getString("email");
+                String country = rs.getString("country");
+                result_users.add(new User(id, name, email, country));
+            }
+        } catch (SQLException e) {
+            printSQLException(e);
+        }
+        return result_users;
+    }
+
+    public List<User> selectUsersByName() {
+//        return selectUser(SELECT_USERS_BY_NAME);
+        List<User> result_users = new ArrayList<>();
+        try (Connection connection = getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_USERS_BY_NAME)) {
+            System.out.println(preparedStatement);
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String name = rs.getString("name");
+                String email = rs.getString("email");
+                String country = rs.getString("country");
+                result_users.add(new User(id, name, email, country));
+            }
+        } catch (SQLException e) {
+            printSQLException(e);
+        }
+        return result_users;
+    }
 
     @Override
     public void insertUser(User user) throws SQLException {
@@ -74,7 +116,6 @@ public class UserDAO implements IUserDAO {
     public List<User> selectAllUsers() {
         List<User> users = new ArrayList<>();
         try (Connection connection = getConnection();
-
              PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ALL_USERS);) {
             System.out.println(preparedStatement);
             ResultSet rs = preparedStatement.executeQuery();
