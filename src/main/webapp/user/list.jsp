@@ -8,9 +8,9 @@
 <body>
 <center>
     <h1>User Management</h1>
-    <form action="/users" method="post" style="margin: 5px 0">
+    <form action="/users" method="get" style="margin: 5px 0">
         <input type="hidden" name="action" value="search">
-        <input type="text" name="country" placeholder="Country" value="${requestScope.country}">
+        <input type="text" name="country" placeholder="Country" >
         <input type="submit" value="Search">
     </form>
     <h2>
@@ -40,7 +40,7 @@
             </tr>
         </c:forEach>
     </table>
-    <form action="/users" method="post" style="margin-top: 10px">
+    <form action="/users" method="get" style="margin-top: 10px">
         <input type="hidden" name="action" value="sort">
         <input type="submit" value="Sort By Name" style="width: 120px">
     </form>
